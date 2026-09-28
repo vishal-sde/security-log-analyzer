@@ -29,7 +29,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String,Object>> handleMalformed(HttpMessageNotReadableException he){
-        rejectLog.warn("Rejected malformed JSON or unknown eventType");
+        rejectLog.warn("Rejected malformed JSON or unknown eventType",he.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("status","rejected","errors","Malformed JSON or invalid field value"));
     }
