@@ -52,4 +52,14 @@ public class AlertController {
                         PageRequest.of(0, Math.min(limit, 500), Sort.by(Sort.Direction.DESC, "createdAt")))
                 .getContent().stream().map(AlertResponse::from).toList();
     }
+
+    @GetMapping("/stats")
+    public java.util.Map<String,Object> stats(){
+        long total = repository.count();
+        var bySeverity = new java.util.EnumMap<Severity,Long>(Severity.class);
+        for(Severity s: Severity.values()){
+            bySeverity.put(s, repository.count((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("severity"),s)));
+        }
+        return java.util.Map.of("totalAlerts",total,"bySeverity",bySeverity);
+    }
 }

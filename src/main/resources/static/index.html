@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Log Analyzer</title>
+    <style>
+        :root { color-scheme: dark; }
+        body { font-family: -apple-system, Segoe UI, sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; padding: 24px; }
+        h1 { font-size: 1.4rem; margin-bottom: 4px; }
+        .subtitle { color: #8b949e; margin-bottom: 24px; }
+        .cards { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; min-width: 140px; }
+        .card .value { font-size: 1.8rem; font-weight: 600; }
+        .card .label { color: #8b949e; font-size: 0.85rem; text-transform: uppercase; }
+        .sev-LOW .value { color: #8b949e; }
+        .sev-MEDIUM .value { color: #d29922; }
+        .sev-HIGH .value { color: #db6d28; }
+        .sev-CRITICAL .value { color: #f85149; }
+        table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #21262d; font-size: 0.9rem; }
+        th { background: #0d1117; color: #8b949e; text-transform: uppercase; font-size: 0.75rem; }
+        tr:last-child td { border-bottom: none; }
+        .badge { padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+        .badge-LOW { background: #30363d; color: #c9d1d9; }
+        .badge-MEDIUM { background: #3b2f08; color: #d29922; }
+        .badge-HIGH { background: #3d1f0a; color: #db6d28; }
+        .badge-CRITICAL { background: #3f1210; color: #f85149; }
+        .empty { color: #8b949e; padding: 20px; text-align: center; }
+        .updated { color: #8b949e; font-size: 0.8rem; margin-top: 12px; }
+    </style>
+</head>
+<body>
+<h1>Security Log Analyzer</h1>
+<div class="subtitle">Live threat detection dashboard — auto-refreshing every 5s</div>
+
+<div class="cards" id="summaryCards"></div>
+
+<table>
+    <thead>
+    <tr><th>Time</th><th>IP</th><th>Username</th><th>Rule(s)</th><th>Score</th><th>Severity</th></tr>
+    </thead>
+    <tbody id="alertsBody"></tbody>
+</table>
+<div class="updated" id="lastUpdated"></div>
+
+<script>
+    async function fetchJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(url + ' -> ' + res.status);
+      return res.json();
+    }
+
+    function renderCards(eventStats, alertStats) {
+      const sevOrder = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+      const cards = [
+        { label: 'Total Events', value: eventStats.totalEvents, cls: '' },
+        { label: 'Total Alerts', value: alertStats.totalAlerts, cls: '' },
+        ...sevOrder.map(s => ({ label: s, value: alertStats.bySeverity[s] ?? 0, cls: 'sev-' + s }))
+      ];
+      document.getElementById('summaryCards').innerHTML = cards.map(c => `
+        <div class="card ${c.cls}">
+          <div class="value">${c.value}</div>
+          <div class="label">${c.label}</div>
+        </div>`).join('');
+    }
+
+    function renderAlerts(alerts) {
+      const body = document.getElementById('alertsBody');
+      if (alerts.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" class="empty">No alerts yet — run the log generator.</td></tr>';
+        return;
+      }
+      body.innerHTML = alerts.map(a => `
+        <tr>
+          <td>${new Date(a.createdAt).toLocaleTimeString()}</td>
+          <td>${a.ip}</td>
+          <td>${a.username}</td>
+          <td>${a.ruleTriggered}</td>
+          <td>${a.riskScore}</td>
+          <td><span class="badge badge-${a.severity}">${a.severity}</span></td>
+        </tr>`).join('');
+    }
+
+    async function refresh() {
+      try {
+        const [eventStats, alertStats, alerts] = await Promise.all([
+          fetchJson('/api/events/stats'),
+          fetchJson('/api/alerts/stats'),
+          fetchJson('/api/alerts?limit=25')
+        ]);
+        renderCards(eventStats, alertStats);
+        renderAlerts(alerts);
+        document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+      } catch (e) {
+        document.getElementById('lastUpdated').textContent = 'Error refreshing: ' + e.message;
+      }
+    }
+
+    refresh();
+    setInterval(refresh, 5000);
+</script>
+</body>
+</html>

@@ -48,4 +48,9 @@ public class EventController {
                 .getContent().stream().map(EventResponse::from).toList();
     }
 
+    @GetMapping("/stats")
+    public java.util.Map<String,Object> stats(){
+        return java.util.Map.of("totalEvents",repository.count());
+    }
+
 }
