@@ -12,6 +12,7 @@ public record LogEventRequest (
     @NotBlank String ip,
     @NotBlank String username,
     @NotNull EventType eventType,
+    String eventId,
     Map<String,Object> meta
 
 ){}

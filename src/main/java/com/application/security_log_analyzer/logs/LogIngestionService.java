@@ -23,9 +23,17 @@ public class LogIngestionService {
     private final DetectionEngine detectionEngine;
 
     public RawLog ingest(LogEventRequest request,String source){
+
+        if(request.eventId() !=  null){
+            var exisiting = rawLogRepository.findByEventId(request.eventId());
+            if(exisiting.isPresent()){
+                log.info("Duplicate eventId {} - skipping reprocessing",request.eventId());
+                return exisiting.get();
+            }
+        }
         String payload = objectMapper.writeValueAsString(request);
 
-        RawLog raw = rawLogRepository.save(new RawLog(source,payload,Instant.now()));
+        RawLog raw = rawLogRepository.save(new RawLog(source,request.eventId(),payload,Instant.now()));
         try {
             NormalizeEvent event = eventRepository.save(normalizer.normalize(raw));
             detectionEngine.evaluate(event);
