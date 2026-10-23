@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import com.application.security_log_analyzer.logs.EventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class SensitiveFileAccessDetectionRule implements DetectionRule{
         return RULE_NAME;
     }
 
-    public Optional<DetectionResult> evaluate(NormalizeEvent event){
+    public Optional<DetectionResult> evaluate(NormalizedEvent event){
         if(event.getEventType() != EventType.FILE_ACCESS || event.getDetails() == null){
             return Optional.empty();
         }

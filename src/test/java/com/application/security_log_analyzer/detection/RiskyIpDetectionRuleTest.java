@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import com.application.security_log_analyzer.logs.EventType;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ class RiskyIpDetectionRuleTest {
 
     private final RiskyIpDetectionRule rule = new RiskyIpDetectionRule();
 
-    private NormalizeEvent event(String ip, EventType type) {
-        NormalizeEvent e = new NormalizeEvent();
+    private NormalizedEvent event(String ip, EventType type) {
+        NormalizedEvent e = new NormalizedEvent();
         e.setIp(ip);
         e.setUsername("someone");
         e.setEventType(type);

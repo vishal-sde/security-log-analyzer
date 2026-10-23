@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import com.application.security_log_analyzer.logs.EventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,7 +27,7 @@ public class BruteForceDetectionRule implements DetectionRule{
     }
 
     @Override
-    public Optional<DetectionResult> evaluate(NormalizeEvent event){
+    public Optional<DetectionResult> evaluate(NormalizedEvent event){
         if(event.getEventType() != EventType.LOGIN_FAILURE){
             return Optional.empty();
         }

@@ -12,10 +12,10 @@ public class LogNormalizer {
 
     private final ObjectMapper objectMapper;
 
-    public NormalizeEvent normalize(RawLog raw){
+    public NormalizedEvent normalize(RawLog raw){
         LogEventRequest req = objectMapper.readValue(raw.getPayLoad(), LogEventRequest.class);
 
-        NormalizeEvent event = new NormalizeEvent();
+        NormalizedEvent event = new NormalizedEvent();
         event.setRawLogId(raw.getId());
         event.setIp(req.ip().trim());
         event.setUsername(req.username().trim().toLowerCase());

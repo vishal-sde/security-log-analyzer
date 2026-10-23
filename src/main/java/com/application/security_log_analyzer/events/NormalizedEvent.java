@@ -20,7 +20,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NormalizeEvent {
+public class NormalizedEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

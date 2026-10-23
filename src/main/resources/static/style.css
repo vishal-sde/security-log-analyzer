@@ -182,6 +182,29 @@ body {
 }
 .empty-state strong { color: var(--text); }
 
+.panel-tools { display: flex; align-items: center; gap: 14px; }
+
+.filter-select, .action-select {
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.78rem;
+}
+.filter-select:focus-visible, .action-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.status-tag { font-size: 0.76rem; font-weight: 500; }
+.status-OPEN { color: var(--sev-critical); }
+.status-ACKNOWLEDGED { color: var(--sev-medium); }
+.status-INVESTIGATING { color: var(--accent); }
+.status-RESOLVED, .status-FALSE_POSITIVE { color: var(--text-dim); }
+.hits { color: var(--text-dim); }
+
 /* ---------- Top IPs panel ---------- */
 .ip-list { padding: 16px 28px; display: flex; flex-direction: column; gap: 14px; }
 .ip-row { display: flex; flex-direction: column; gap: 5px; }

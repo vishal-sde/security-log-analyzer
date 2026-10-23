@@ -118,4 +118,22 @@ public class IngestionFlowIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
+    @Test
+    void repeatedBruteForceCollapsesIntoOneIncident() {
+        String ip = "203.0.113.201";
+        String user = "dedup-victim";
+
+        for (int i = 0; i < 9; i++) {
+            postLog(ip, user, "LOGIN_FAILURE");
+        }
+
+        await().untilAsserted(() -> {
+            var matching = alertRepository.findAll().stream()
+                    .filter(a -> ip.equals(a.getIp()) && user.equals(a.getUsername()))
+                    .toList();
+            assertThat(matching).hasSize(1);
+            assertThat(matching.get(0).getOccurrenceCount()).isEqualTo(5); // failures 5 to 9 trip the rule
+        });
+    }
 }

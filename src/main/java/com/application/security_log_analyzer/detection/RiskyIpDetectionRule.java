@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public class RiskyIpDetectionRule implements DetectionRule{
     }
 
     @Override
-    public Optional<DetectionResult> evaluate(NormalizeEvent event){
+    public Optional<DetectionResult> evaluate(NormalizedEvent event){
         if(!DENYLIST.contains(event.getIp())){
             return Optional.empty();
         }

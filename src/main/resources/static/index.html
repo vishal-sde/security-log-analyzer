@@ -36,13 +36,19 @@
 <main class="console-grid">
     <section class="panel panel-alerts">
         <div class="panel-header">
-            <h2>Alert stream</h2>
-            <span class="panel-meta" id="alertCount"></span>
+            <h2>Incidents</h2>
+            <div class="panel-tools">
+                <select id="statusFilter" class="filter-select" aria-label="Filter incidents">
+                    <option value="active">Active</option>
+                    <option value="all">All</option>
+                </select>
+                <span class="panel-meta" id="alertCount"></span>
+            </div>
         </div>
         <div class="table-wrap">
             <table class="log-table">
                 <thead>
-                <tr><th>Time</th><th>Source IP</th><th>User</th><th>Rule</th><th>Score</th><th>Severity</th></tr>
+                <tr><th>Last seen</th><th>Source IP</th><th>User</th><th>Rules</th><th>Hits</th><th>Score</th><th>Severity</th><th>Status</th><th>Action</th></tr>
                 </thead>
                 <tbody id="alertsBody"></tbody>
             </table>

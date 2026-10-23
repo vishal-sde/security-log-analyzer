@@ -21,7 +21,7 @@ public class EventController {
     private final NormalizedEventRepository repository;
 
     public record EventResponse(Long id, String ip, String username, EventType eventType, Instant occurredAt,Long rawLogId,String details){
-        static EventResponse from(NormalizeEvent e){
+        static EventResponse from(NormalizedEvent e){
             return new EventResponse(e.getId(),e.getIp(),e.getUsername(),e.getEventType(),e.getOccurredAt(),e.getRawLogId(),e.getDetails());
 
         }
@@ -33,7 +33,7 @@ public class EventController {
                                       @RequestParam(required = false) EventType type,
                                       @RequestParam(defaultValue = "50") int limit){
 
-        Specification<NormalizeEvent> spec = ((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+        Specification<NormalizedEvent> spec = ((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
         if(ip != null){
             spec = spec.and(((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("ip"),ip)));
         }

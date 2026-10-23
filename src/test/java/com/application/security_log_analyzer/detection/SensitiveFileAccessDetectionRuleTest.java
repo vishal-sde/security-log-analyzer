@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import com.application.security_log_analyzer.logs.EventType;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
@@ -15,8 +15,8 @@ class SensitiveFileAccessDetectionRuleTest {
     private final ObjectMapper mapper = new ObjectMapper();
     private final SensitiveFileAccessDetectionRule rule = new SensitiveFileAccessDetectionRule(mapper);
 
-    private NormalizeEvent fileEvent(String path) {
-        NormalizeEvent e = new NormalizeEvent();
+    private NormalizedEvent fileEvent(String path) {
+        NormalizedEvent e = new NormalizedEvent();
         e.setIp("10.0.0.5");
         e.setUsername("someone");
         e.setEventType(EventType.FILE_ACCESS);
@@ -50,7 +50,7 @@ class SensitiveFileAccessDetectionRuleTest {
 
     @Test
     void ignoresNonFileAccessEvent() {
-        NormalizeEvent e = fileEvent("/etc/shadow");
+        NormalizedEvent e = fileEvent("/etc/shadow");
         e.setEventType(EventType.LOGIN_SUCCESS);
 
         assertThat(rule.evaluate(e)).isEmpty();

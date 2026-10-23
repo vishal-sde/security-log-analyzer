@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 
 import java.util.Optional;
 
@@ -13,5 +13,5 @@ public interface DetectionRule {
       Evaluate one normalized event. Returns a result if the rule fires,
       or empty if the event doesn't trigger this rule.
      */
-    Optional<DetectionResult> evaluate(NormalizeEvent event);
+    Optional<DetectionResult> evaluate(NormalizedEvent event);
 }

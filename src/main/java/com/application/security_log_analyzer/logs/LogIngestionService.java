@@ -2,7 +2,7 @@ package com.application.security_log_analyzer.logs;
 
 import com.application.security_log_analyzer.detection.DetectionEngine;
 import com.application.security_log_analyzer.events.LogNormalizer;
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import com.application.security_log_analyzer.events.NormalizedEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class LogIngestionService {
 
         RawLog raw = rawLogRepository.save(new RawLog(source,request.eventId(),payload,Instant.now()));
         try {
-            NormalizeEvent event = eventRepository.save(normalizer.normalize(raw));
+            NormalizedEvent event = eventRepository.save(normalizer.normalize(raw));
             detectionEngine.evaluate(event);
         }catch (Exception e){
             log.error("Normalization failed for raw log {}",raw.getId(),e);

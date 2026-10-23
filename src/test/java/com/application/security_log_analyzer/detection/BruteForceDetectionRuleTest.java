@@ -1,6 +1,6 @@
 package com.application.security_log_analyzer.detection;
 
-import com.application.security_log_analyzer.events.NormalizeEvent;
+import com.application.security_log_analyzer.events.NormalizedEvent;
 import com.application.security_log_analyzer.logs.EventType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ public class BruteForceDetectionRuleTest {
         lenient().when(redisTemplate.opsForValue()).thenReturn(valueOperations);
     }
 
-    private NormalizeEvent loginFailure(String ip,String username){
-        NormalizeEvent event = new NormalizeEvent();
+    private NormalizedEvent loginFailure(String ip, String username){
+        NormalizedEvent event = new NormalizedEvent();
         event.setIp(ip);
         event.setUsername(username);
         event.setEventType(EventType.LOGIN_FAILURE);
@@ -43,7 +43,7 @@ public class BruteForceDetectionRuleTest {
 
     @Test
     void ignoresNonLoginFailureEvents(){
-        NormalizeEvent event = loginFailure("10.0.0.1","man");
+        NormalizedEvent event = loginFailure("10.0.0.1","man");
         event.setEventType(EventType.LOGIN_SUCCESS);
 
         Optional<DetectionResult> result = rule.evaluate(event);
